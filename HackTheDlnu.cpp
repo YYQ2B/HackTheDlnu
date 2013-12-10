@@ -10,7 +10,7 @@ struct node_filesystem                      //文件系统  结点
 {
     string name;                            //此结点名字
 
-    string document[1000];                  //文件结点，用组数保存文件名
+    string document[1000];                  //文件结点，用数组保存文件名
     int    document_length;
     node_filesystem *filedir[1000];         //
     int              filedir_length;
@@ -25,6 +25,10 @@ struct node_filesystem                      //文件系统  结点
 };
 
 node_filesystem *rootdir = new node_filesystem();                    //根目录
+string target_ip;
+string target_port;
+string target_user;
+string target_password;
 
 
 node_filesystem *workpoint ;                //工作指针
@@ -48,9 +52,11 @@ int filesystem_read(string filename)        //文件系统
 	string fileflag = "-";
     while(infile>>fileinput)
 	{
+	   // cout<<fileflag<<":"<<fileflag.length()<<endl;
 	    int flag = 0;
 	    for(int i = fileflag.length() - 1; i >= 0  ; i --)       //文件判断标志，判断当前录入的是文件还是文件夹
         {
+  //          cout<<"fileinput="<<fileinput<<"   fileflag="<<fileflag<<endl;
             if(fileinput[i] != fileflag[i])
             {
                 if(fileinput[i] == '+')
@@ -81,6 +87,58 @@ int filesystem_read(string filename)        //文件系统
 	}
 	infile.close();
 	workpoint = rootdir;
+}
+
+void mail()                       //读取mail
+{
+    string email = "Mail_01.htd";
+    email="MissionPack\\"+email;
+    ifstream infile(email.c_str());         //读取邮件系统
+    string input_file;
+    system("cls");
+    while(getline(infile , input_file))               //读取邮件以获得文件中的IP地址
+    {
+        cout<<input_file<<endl;
+        for(int i=0;i<input_file.length();i++)
+        {
+            if(input_file[i]=='I' && input_file[i+1]=='P')          //读取IP
+            {
+                target_ip=input_file.substr(3 , input_file.length());
+            }
+            if(input_file[i]=='p' && input_file[i+1]=='o' && input_file[i+2]=='r' &&input_file[i+3]=='t')   //读取端口
+            {
+                target_port=input_file.substr(5 , input_file.length());
+            }
+             if(input_file[i]=='u' && input_file[i+1]=='s' && input_file[i+2]=='e' &&           //读取用户名
+                input_file[i+3]=='r')
+            {
+                target_user=input_file.substr(5 , input_file.length());
+            }
+           if(input_file[i]=='p' && input_file[i+1]=='a' && input_file[i+2]=='s' &&         //读取密码
+                input_file[i+3]=='s' && input_file[i+4]=='w' && input_file[i+5]=='o'
+                && input_file[i+6]=='r' &&input_file[i+7]=='d')
+            {
+                target_password=input_file.substr(9 , input_file.length());
+            }
+
+        }
+    }
+    cout<<endl<<endl;
+}
+
+void command_telnet(string IP , string port)
+{
+    void login();
+    if(IP == "" || port  == "")
+    {
+        cout<<"wrong input !"<<endl;
+        return;
+    }
+    if(IP==target_ip && port == target_port)
+    {
+        system("cls");
+        login();
+    }
 }
 
 void command_ls()
@@ -126,6 +184,47 @@ void command_cd(string inputdir)
     cout<<endl<< "cannot find the folder "<<inputdir<<endl<<endl;
 }
 
+void command_copy(string file_name)                 //拷贝文件函数
+{
+    if(file_name == "")
+    {
+        cout<<endl
+            <<"      Syntax error! Correct syntax : copy [filename]"<<endl<<endl;
+
+        return ;
+    }
+//    workpoint=rootdir ;
+    ofstream out("FileSystem\\default.htd" , ios::app);
+    for(int i=0 ; i<workpoint->document_length ; i++)
+    {
+        if(workpoint->document[i] == file_name)
+        {
+            string str="\n--";
+            str=str + workpoint->document[i];
+            out<<str;
+
+            cout<<endl<<endl<<"       copy succssfully!"<<endl<<endl;
+        }
+    }
+    out.close();
+//    delete rootdir ;                //此处仅为测试是否能写入文件
+//    rootdir = new node_filesystem() ;
+//    filesystem_read("default.htd");
+}
+
+void command_hangup()
+{
+    delete rootdir ;
+    rootdir = new node_filesystem() ;
+    workpoint = rootdir ;
+    filesystem_read("default.htd");
+}
+
+void command_del(string ip)
+{
+
+}
+
 long long calculatecommand(string inputcommand)
 {
 	long long result = 0 ;
@@ -137,7 +236,6 @@ long long calculatecommand(string inputcommand)
 	}
 	return result;
 }
-
 
 int command(string inputcommand)            //命令系统
 {
@@ -179,6 +277,37 @@ int command(string inputcommand)            //命令系统
             {
                 return 0;
             }
+        case 240132926:
+            {
+                string ip , port;
+                inputcommand_stream>>ip>>port;
+                command_telnet(ip,port);
+                return 0;
+            }
+        case 229410:
+            {
+                 mail();
+                 return 0;
+            }
+        case 63309:
+            {
+                string file_name;
+                inputcommand_stream>>file_name;
+                command_copy(file_name);
+                return 0;
+            }
+        case 95759342:              //hangup
+            {
+                command_hangup();
+                return 0;
+            }
+        case 2846:
+            {
+                string ip;
+                inputcommand_stream>>ip;
+                command_del(ip);
+                return 0;
+            }
 		default :
 			{
 			    return 1;
@@ -186,6 +315,40 @@ int command(string inputcommand)            //命令系统
 		}
 	}
 }
+
+void work()
+{
+    delete rootdir;
+    rootdir = new node_filesystem();
+    filesystem_read("TheFirstStage.htd");
+    while(1)
+    {
+        string inputcommand;
+        cout<<"[Target@"<<workpoint->name<<"]#";
+        getline(cin,inputcommand);
+        if(command(inputcommand))
+        {
+            cout<<endl<<"   Unknown  command"<<endl<<endl;
+        }
+    }
+}
+
+void login()
+{
+
+    string user , password;
+    cout<<"user:";
+    cin>>user;
+    cout<<"password:";
+    cin>>password;
+    if(user == target_user && target_password==password)
+    {
+        getchar();
+        system("cls");
+        work();
+    }
+}
+
 
 
 void welcomeinformation()                  //欢迎信息
@@ -205,11 +368,13 @@ int main ()
     welcomeinformation();
     // filesystem_read
     filesystem_read("default.htd");
+    string str;
 	while(1)
 	{
 		string inputcommand = "";
 		cout<<"[Vic@"<<workpoint->name<<"]#";
 		getline(cin,inputcommand);
+
 		if(command(inputcommand))
         {
             cout<<endl<<"   Unknown  command"<<endl<<endl;
