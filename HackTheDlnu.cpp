@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -6,11 +6,11 @@
 #include <windows.h>
 using namespace std;
 
-struct node_filesystem                      //ÎÄ¼şÏµÍ³  ½áµã
+struct node_filesystem                      //æ–‡ä»¶ç³»ç»Ÿ  ç»“ç‚¹
 {
-    string name;                            //´Ë½áµãÃû×Ö
+    string name;                            //æ­¤ç»“ç‚¹åå­—
 
-    string document[1000];                  //ÎÄ¼ş½áµã£¬ÓÃÊı×é±£´æÎÄ¼şÃû
+    string document[1000];                  //æ–‡ä»¶ç»“ç‚¹ï¼Œç”¨æ•°ç»„ä¿å­˜æ–‡ä»¶å
     int    document_length;
     node_filesystem *filedir[1000];         //
     int              filedir_length;
@@ -24,16 +24,16 @@ struct node_filesystem                      //ÎÄ¼şÏµÍ³  ½áµã
     }
 };
 
-node_filesystem *rootdir = new node_filesystem();                    //¸ùÄ¿Â¼
+node_filesystem *rootdir = new node_filesystem();                    //æ ¹ç›®å½•
 string target_ip;
 string target_port;
 string target_user;
 string target_password;
 
 
-node_filesystem *workpoint ;                //¹¤×÷Ö¸Õë
+node_filesystem *workpoint ;                //å·¥ä½œæŒ‡é’ˆ
 
-int filesystem_read(string filename)        //ÎÄ¼şÏµÍ³
+int filesystem_read(string filename)        //æ–‡ä»¶ç³»ç»Ÿ
 {
     rootdir->pri_dir = NULL;
     rootdir->name = "/";
@@ -44,7 +44,7 @@ int filesystem_read(string filename)        //ÎÄ¼şÏµÍ³
 
 	if(!infile)
 	{
-		cerr << "³õÊ¼ÎÄ¼ş¶ÁÈ¡³ö´í" <<filename<<"\n";
+		cerr << "åˆå§‹æ–‡ä»¶è¯»å–å‡ºé”™" <<filename<<"\n";
 		return 1;
 	}
 
@@ -54,7 +54,7 @@ int filesystem_read(string filename)        //ÎÄ¼şÏµÍ³
 	{
 	   // cout<<fileflag<<":"<<fileflag.length()<<endl;
 	    int flag = 0;
-	    for(int i = fileflag.length() - 1; i >= 0  ; i --)       //ÎÄ¼şÅĞ¶Ï±êÖ¾£¬ÅĞ¶Ïµ±Ç°Â¼ÈëµÄÊÇÎÄ¼ş»¹ÊÇÎÄ¼ş¼Ğ
+	    for(int i = fileflag.length() - 1; i >= 0  ; i --)       //æ–‡ä»¶åˆ¤æ–­æ ‡å¿—ï¼Œåˆ¤æ–­å½“å‰å½•å…¥çš„æ˜¯æ–‡ä»¶è¿˜æ˜¯æ–‡ä»¶å¤¹
         {
   //          cout<<"fileinput="<<fileinput<<"   fileflag="<<fileflag<<endl;
             if(fileinput[i] != fileflag[i])
@@ -89,32 +89,32 @@ int filesystem_read(string filename)        //ÎÄ¼şÏµÍ³
 	workpoint = rootdir;
 }
 
-void mail()                       //¶ÁÈ¡mail
+void mail()                       //è¯»å–mail
 {
     string email = "Mail_01.htd";
     email="MissionPack\\"+email;
-    ifstream infile(email.c_str());         //¶ÁÈ¡ÓÊ¼şÏµÍ³
+    ifstream infile(email.c_str());         //è¯»å–é‚®ä»¶ç³»ç»Ÿ
     string input_file;
     system("cls");
-    while(getline(infile , input_file))               //¶ÁÈ¡ÓÊ¼şÒÔ»ñµÃÎÄ¼şÖĞµÄIPµØÖ·
+    while(getline(infile , input_file))               //è¯»å–é‚®ä»¶ä»¥è·å¾—æ–‡ä»¶ä¸­çš„IPåœ°å€
     {
         cout<<input_file<<endl;
         for(int i=0;i<input_file.length();i++)
         {
-            if(input_file[i]=='I' && input_file[i+1]=='P')          //¶ÁÈ¡IP
+            if(input_file[i]=='I' && input_file[i+1]=='P')          //è¯»å–IP
             {
                 target_ip=input_file.substr(3 , input_file.length());
             }
-            if(input_file[i]=='p' && input_file[i+1]=='o' && input_file[i+2]=='r' &&input_file[i+3]=='t')   //¶ÁÈ¡¶Ë¿Ú
+            if(input_file[i]=='p' && input_file[i+1]=='o' && input_file[i+2]=='r' &&input_file[i+3]=='t')   //è¯»å–ç«¯å£
             {
                 target_port=input_file.substr(5 , input_file.length());
             }
-             if(input_file[i]=='u' && input_file[i+1]=='s' && input_file[i+2]=='e' &&           //¶ÁÈ¡ÓÃ»§Ãû
+             if(input_file[i]=='u' && input_file[i+1]=='s' && input_file[i+2]=='e' &&           //è¯»å–ç”¨æˆ·å
                 input_file[i+3]=='r')
             {
                 target_user=input_file.substr(5 , input_file.length());
             }
-           if(input_file[i]=='p' && input_file[i+1]=='a' && input_file[i+2]=='s' &&         //¶ÁÈ¡ÃÜÂë
+           if(input_file[i]=='p' && input_file[i+1]=='a' && input_file[i+2]=='s' &&         //è¯»å–å¯†ç 
                 input_file[i+3]=='s' && input_file[i+4]=='w' && input_file[i+5]=='o'
                 && input_file[i+6]=='r' &&input_file[i+7]=='d')
             {
@@ -184,7 +184,7 @@ void command_cd(string inputdir)
     cout<<endl<< "cannot find the folder "<<inputdir<<endl<<endl;
 }
 
-void command_copy(string file_name)                 //¿½±´ÎÄ¼şº¯Êı
+void command_copy(string file_name)                 //æ‹·è´æ–‡ä»¶å‡½æ•°
 {
     if(file_name == "")
     {
@@ -207,7 +207,7 @@ void command_copy(string file_name)                 //¿½±´ÎÄ¼şº¯Êı
         }
     }
     out.close();
-//    delete rootdir ;                //´Ë´¦½öÎª²âÊÔÊÇ·ñÄÜĞ´ÈëÎÄ¼ş
+//    delete rootdir ;                //æ­¤å¤„ä»…ä¸ºæµ‹è¯•æ˜¯å¦èƒ½å†™å…¥æ–‡ä»¶
 //    rootdir = new node_filesystem() ;
 //    filesystem_read("default.htd");
 }
@@ -237,7 +237,7 @@ long long calculatecommand(string inputcommand)
 	return result;
 }
 
-int command(string inputcommand)            //ÃüÁîÏµÍ³
+int command(string inputcommand)            //å‘½ä»¤ç³»ç»Ÿ
 {
 	istringstream inputcommand_stream(inputcommand);
 
@@ -247,12 +247,12 @@ int command(string inputcommand)            //ÃüÁîÏµÍ³
 
 		switch (temp)
 		{
-		case 104358:			//exit   ÊıÖµ210À´×Ô×Ô¼º¼ÆËã
+		case 104358:			//exit   æ•°å€¼210æ¥è‡ªè‡ªå·±è®¡ç®—
 			{
 				exit(0);
 				break;
 			}
-        case 1585264:           //clear ÇåÆÁ
+        case 1585264:           //clear æ¸…å±
             {
                 system("cls");
                 return 0;
@@ -351,11 +351,11 @@ void login()
 
 
 
-void welcomeinformation()                  //»¶Ó­ĞÅÏ¢
+void welcomeinformation()                  //æ¬¢è¿ä¿¡æ¯
 {
     cout<<"Hack The Dlnu -Console Command"<<endl
         <<"         -version 0.1"<<endl
-        <<"         By  Vic_"<<endl                                //×Ô¼º°ÑÃû×Ö²¹ÉÏ
+        <<"         By  Vic_"<<endl                                //è‡ªå·±æŠŠåå­—è¡¥ä¸Š
         <<endl
         <<"---------------------------------------"<<endl
         <<"Input \"help\" get help;"<<endl
