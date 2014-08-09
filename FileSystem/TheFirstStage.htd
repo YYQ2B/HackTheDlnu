@@ -11,8 +11,6 @@
 --DrWatson.rulz
 --morefiles.etc
 +Image
---yest.jpg
---mydog.jpg
 --dlnudoor.png
 --defaced.gif
 -+MyPics
@@ -25,10 +23,13 @@
 --Matrix1_[1].avi
 --Matrix2_(reloaded)divx.mpg
 --Matrix3_revolutions_33.mpg
++TelLogs
+--192.168.010.001
+--192.168.029.020
+--10.242.54.29
 +ISO
---memtest.iso
-+Bookmarks
---www.csdn.net/Vic___
---code.google.com/p/hackthedlnu
-+Downloads
 --WindowsXP.iso
++Bookmarks
+--www.csdn.net/D.K.
+--www.youtube.com
++Downloads
